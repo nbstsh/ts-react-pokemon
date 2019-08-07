@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import style from './PokemonSearch.module.scss';
+
 import User from '../../interfaces/User.interface';
 import Pokemon from '../../interfaces/Pokemon.interface';
 import PokemonDisplay from '../PokemonDisplay/PokemonDisplay.component';
@@ -7,7 +9,7 @@ import PokemonDisplay from '../PokemonDisplay/PokemonDisplay.component';
 const POKEMON_API: string = 'https://pokeapi.co/api/v2/pokemon';
 
 interface SearchState {
-	error: boolean;
+	error: string;
 	inputValue: string;
 	pokemon: Pokemon | null;
 }
@@ -16,18 +18,28 @@ class PokemonSearch extends Component<User, SearchState> {
 	constructor(props: User) {
 		super(props);
 		this.state = {
-			error: false,
+			error: '',
 			inputValue: '',
 			pokemon: null
 		};
 	}
 
 	onSearchClick = async () => {
+		const { inputValue } = this.state;
+
+		if (!inputValue)
+			return this.setState({ error: 'Please provide pokemon name!' });
+
 		try {
-			const res = await fetch(`${POKEMON_API}/${this.state.inputValue}`);
-			if (res.status !== 200) return this.setState({ error: true });
+			const res = await fetch(`${POKEMON_API}/${inputValue}`);
+			if (res.status !== 200)
+				return this.setState({ error: 'Something went wrong ...' });
 
 			const data = await res.json();
+			if (!data)
+				return this.setState({
+					error: 'Pokemon with given name was not found ....'
+				});
 
 			const pokemon: Pokemon = {
 				name: data.name,
@@ -36,9 +48,9 @@ class PokemonSearch extends Component<User, SearchState> {
 				imageUrl: data.sprites.front_default
 			};
 
-			this.setState({ error: false, pokemon });
+			this.setState({ error: '', pokemon });
 		} catch (e) {
-			this.setState({ error: true });
+			this.setState({ error: 'Sometihng went wrong ...' });
 		}
 	};
 
@@ -48,21 +60,24 @@ class PokemonSearch extends Component<User, SearchState> {
 
 		return (
 			<div>
-				<p>
+				<p className={style.userInfo}>
 					User {name}{' '}
 					{numberOfPokemons && (
 						<span>has {numberOfPokemons} pokemons!</span>
 					)}
 				</p>
 				<input
+					className={style.input}
 					type="text"
 					value={inputValue}
 					onChange={e =>
 						this.setState({ inputValue: e.target.value })
 					}
 				/>
-				<button onClick={this.onSearchClick}>search</button>
-				{error && <p>Pokemon with given name was not found.....</p>}
+				<button className={style.button} onClick={this.onSearchClick}>
+					search
+				</button>
+				{error && <p className={style.errorMessage}>{error}</p>}
 				{!error && pokemon && <PokemonDisplay pokemon={pokemon} />}
 			</div>
 		);
