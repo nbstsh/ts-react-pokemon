@@ -66,6 +66,7 @@ class PokemonSearch extends Component<User, SearchState> {
 						<span>has {numberOfPokemons} pokemons!</span>
 					)}
 				</p>
+				<p>Enter your favorite Pokemon name!</p>
 				<input
 					className={style.input}
 					type="text"

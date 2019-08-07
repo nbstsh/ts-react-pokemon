@@ -1,0 +1,24 @@
+.card {
+  box-shadow: 1px 1px 1px rgba(#000, 0.3);
+  padding: 20px;
+  margin: 50px 0;
+  border-radius: 5px;
+  background-color: rgb(245, 245, 245);
+  color: rgb(44, 44, 44);
+}
+
+.img {
+  width: 50%;
+  height: 50%;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.ability,
+.experience {
+  font-size: 16px;
+  margin: 8px;
+}
